@@ -1,38 +1,83 @@
+import openpyxl
 import numpy as np
 
 
-def get_minmax(matrix):
-    transpose_matrix = matrix.T
-
-    cols_min_values = []
-
-    for col in transpose_matrix:
-        cols_min_values.append(np.max(col))
-
-    cols_min_values.append(get_maxmin(matrix))
-
-    return np.min(cols_min_values)
+def getMatrixOutOfSheet(sheet):
+    matrix = []
 
 
-def get_maxmin(matrix):
-    rows_min_values = []
-
-    for row in matrix:
-        rows_min_values.append(np.min(row))
-
-    return np.max(rows_min_values)
+    for row in sheet.iter_rows(values_only = True):
+        matrix.append(row)
 
 
-def main():
-    matrix = np.array([
-        [0.9, 0.4, 0.2],
-        [0.3, 0.6, 0.8],
-        [0.5, 0.7, 0.2]
-    ])
-
-    print(get_minmax(matrix))
-    print(get_maxmin(matrix))
+    return np.array(matrix)
 
 
-if __name__ == '__main__':
-    main()
+
+
+def chistStrat(workbook):
+    payMatrix = getMatrixOutOfSheet(workbook.worksheets[0])
+    print(payMatrix)
+
+    numberOfRows = payMatrix.shape[0]
+    numberOfColumns = payMatrix.shape[1]
+
+
+    min = []
+    max = []
+
+
+    for row in range(numberOfRows):
+        minValue = 100000
+
+        print(numberOfRows)
+        print(numberOfColumns)
+
+
+        for column in range(numberOfColumns):
+            if payMatrix[row, column] < minValue:
+                minValue = payMatrix[row, column]
+           
+        min.append(minValue)
+
+
+    for column in range(numberOfColumns):
+        maxValue = -100000
+        for row in range(numberOfRows):
+            if payMatrix[row, column] > maxValue:
+                maxValue = payMatrix[row, column]
+           
+        max.append(maxValue)
+
+
+    index = np.argmax(min)
+    maxmin = min[index]
+
+
+    index = np.argmin(max)
+    minmax = max[index]
+
+
+    print(f'min A:{min}')
+    print(f'max B:{max}\n')
+    print(f'Нижня ціна гри:{maxmin}')
+    print(f'Верхня ціна гри:{minmax}\n')
+    if(maxmin != minmax):
+        print("Сідлової точки не існує, отже рівноваги в чистих стратегіях немає")
+    else:
+        print(f'Сідлова точка:{minmax}')
+
+
+# =============================================================================================================
+
+
+filePath = '/Users/admin/Univer/3kurs/saptr/code/lab5/task_2.xlsx'
+
+
+workbook = openpyxl.load_workbook(filePath)
+
+
+chistStrat(workbook)
+
+
+workbook.close()

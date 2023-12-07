@@ -15,7 +15,7 @@ def getMatrixOutOfSheet(sheet):
 
 
 
-def chistStrat(workbook):
+def cleanStrat(workbook):
     payMatrix = getMatrixOutOfSheet(workbook.worksheets[0])
     print(payMatrix)
 
@@ -77,7 +77,7 @@ filePath = '/Users/admin/Univer/3kurs/saptr/code/lab5/task_1.xlsx'
 workbook = openpyxl.load_workbook(filePath)
 
 
-chistStrat(workbook)
+cleanStrat(workbook)
 
 
 workbook.close()
